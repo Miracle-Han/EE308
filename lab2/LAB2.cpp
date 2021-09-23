@@ -3,82 +3,83 @@
 #include <fstream>
 #include <sstream>
 using namespace std;
-const string table1[32] = {"auto", "break",	"case",	"char",	"const", "continue","default",	"do",
+
+const string Keywords_list[32] = {"auto", "break",	"case",	"char",	"const", "continue","default",	"do",
                             "double",	"else",	"enum",	"extern", "float", "for", "goto" , "if",
                             "int",	"long",	"register",	"return", "short", "signed", "sizeof", "static",
                             "struct",	"switch",	"typedef",	"union", "unsigned", "void", "volatile", "while"};
 
 static int table2[32] = {0};
 
-struct CaseNum{           
-	bool switch_ready=false; 
-	bool Da_kuo_hao_ready=false; 
+/*for switch*/
+struct CaseNum{ 
+    bool activate_switch = false; 
+    bool activate_brace = false; 
 };
-
-CaseNum c[100];         
+ 
+/*for case*/
+CaseNum c[100];      
 static int structNum =0; 
-int caseArr[100] = {0}; 
+int caseArr[100] = {0};
 static int casePos=0;
-
+ 
+/*for if*/
 struct The_if{
     bool hasIf = false;
-	bool elseIf = false;
-	bool hasElse= false;
+    bool elseIf = false;
+    bool hasElse= false;
 };
-
+ 
 The_if ifArr[100];
 int ifArrPos = -1;
 static int IE=0, IEE=0;
 
 int main(){
-	char address[100];
+	char file_add[100];
 	cout << "File_name: ";
-    cin >> address;
-	fstream cpp_file(address);
+    cin >> file_add;
+	fstream cpp_file(file_add);
 	
 	int table3[32] = {0};
 	for(int i=0;i<32;i++){
-		table3[i]=table1[i].length();
+		table3[i]=Keywords_list[i].length();
 	}
 	
 	string line;
-	while(!cpp_file.eof()){
+	while(!cpp_file.eof()){ 		
+   		 getline(cpp_file, line); 
+			for(int i=0;i<line.length();i++){
+				if( ! (line[i]>='a' && line[i]<='z' || line[i]>='A'&&line[i]<='Z' || line[i]>='0' && line[i]<='9' || line[i] == '{'  				|| line[i]=='}' ||  line[i]=='_' ||line[i]=='/' || line[i]=='"'))
+  				line[i]=' ';	 
+  			}
+    		// For later convenience, we firstly transpose unused strings to Spaces. 
+    	string str;
+		istringstream is(line); // Read a separate string in each line
 		
-    	getline(cpp_file, line); 
-    	
-    	for(int i=0;i<line.length();i++){
-    		if( ! (line[i]>='a'&&line[i]<='z' || line[i]>='A'&&line[i]<='Z' || line[i]>='0'&&line[i]<='9' || line[i]=='{' || line[i]=='}' || line[i]=='_' || line[i]=='/' || line[i]=='"') ){    //把没用的符号变成空格 
-			    line[i]=' ';	
-			}
-		} 
-		
-		string s;
-		istringstream is(line); 
-		
-		while(is>>s){
-			
-			if(s[0]=='"' || s[0]=='/')   continue;
+		while(is>>str){
+			if(str[0]=='"' || str[0]=='/')   continue;
 			
 			for(int i=0;i<32;i++){
-				if( s.length()==table3[i] ){
-					if( s.compare(table1[i])==0 ){	table2[i]++; }
+				if( str.length()==table3[i] ){
+					if( str.compare(Keywords_list[i])==0 )
+					table2[i]++;
 				}
 				
 				
-				if( s.compare(table1[i])==0 && i==25){
-					c[structNum].switch_ready=true;
+				if( str.compare(Keywords_list[i])==0 && i==25){
+					c[structNum].activate_switch=true;
 				}
-				if( s.compare("{")==0 && c[structNum].switch_ready==true){
-					c[structNum].Da_kuo_hao_ready=true;
+				if( str.compare("{")==0 && c[structNum].activate_switch==true){
+					c[structNum].activate_brace=true;
 				}
 				
-				if(c[structNum].switch_ready && c[structNum].Da_kuo_hao_ready ){
-					if( s.compare(table1[i])==0 && i==2){
+				if(c[structNum].activate_switch && c[structNum].activate_brace ){
+					if( str.compare(Keywords_list[i])==0 && i==2){
 						caseArr[casePos]++;
 					}
 				}
 				
-				if(c[structNum].switch_ready && c[structNum].Da_kuo_hao_ready && s.compare("}")==0){
+				if(c[structNum].activate_switch && c[structNum].activate_brace && str.compare("}")==0){
 					structNum++;
 					casePos++;	
 				}	
