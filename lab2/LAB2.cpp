@@ -4,11 +4,8 @@
 #include <sstream>
 using namespace std;
 
-const string Keywords_list[32] = {"auto", "break",	"case",	"char",	"const", "continue","default",	"do",
-                            "double",	"else",	"enum",	"extern", "float", "for", "goto" , "if",
-                            "int",	"long",	"register",	"return", "short", "signed", "sizeof", "static",
-                            "struct",	"switch",	"typedef",	"union", "unsigned", "void", "volatile", "while"};
-
+const string Keywords_list[32] = {"auto", "break",	"case",	"char",	"const", "continue","default",	"do", "double",	"else",	"enum",	"extern", "float", "for", "goto" , "if",
+                            "int",	"long",	"register",	"return", "short", "signed", "sizeof", "static", "struct",	"switch",	"typedef",	"union", "unsigned", "void", "volatile", "while"};
 static int table2[32] = {0};
 
 /*for switch*/
@@ -29,7 +26,7 @@ struct The_if{
     bool elseIf = false;
     bool hasElse= false;
 };
- 
+
 The_if ifArr[100];
 int ifArrPos = -1;
 static int IE=0, IEE=0;
@@ -44,7 +41,6 @@ int main(){
 	for(int i=0;i<32;i++){
 		table3[i]=Keywords_list[i].length();
 	}
-	
 	string line;
 	while(!cpp_file.eof()){ 		
    		 getline(cpp_file, line); 
@@ -86,7 +82,6 @@ int main(){
 			} 
 		}		
 		
-
 		if( line.find("else if")>=0 && line.find("else if")<line.length()){
 			ifArr[ifArrPos].elseIf = true;
 		} else if( line.find("if")>=0 && line.find("if")<line.length()){
@@ -105,13 +100,11 @@ int main(){
 			}
 		}
 	}
-	
 	int total;
 	for(int j=0;j<32;j++){
 		total+=table2[j]; 
 	} 
 	cout << "keywords_num: " << total << endl;
-	
 	cout << "switch structure's num: " << table2[25] << endl;
 	cout << "case's num: ";         
 	for(int i=0;i<100;i++){
@@ -120,8 +113,6 @@ int main(){
 		}
 	}
 	cout << endl; 
-
-
 	for(int i=0;i<100;i++){
 		if(ifArr[i].hasIf){
 			if(ifArr[i].elseIf) IEE++;
@@ -129,9 +120,7 @@ int main(){
 		    }
 		}
 	} 
-	
 	cout << "if-else structure's num': " << IE <<endl;
 	cout << "if-elseif-else structure's num: " << IEE << endl;
-	
 	return 0;
 }
